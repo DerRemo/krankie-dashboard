@@ -1,7 +1,7 @@
 {
   "name": "krankie-dashboard",
   "version": "1.0.0",
-  "description": "LAN-only web dashboard over your local krankie ASO database and App Store Connect data — keyword rankings, downloads, revenue, reviews, and competitor benchmarks. macOS + Bun.",
+  "description": "Web dashboard over your local krankie ASO database and App Store Connect data — keyword rankings, downloads, revenue, reviews, and competitor benchmarks. macOS + Bun.",
   "license": "MIT",
   "author": "Remo Adams-Schönfeld",
   "homepage": "https://github.com/DerRemo/krankie-dashboard#readme",

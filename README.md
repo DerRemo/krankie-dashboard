@@ -3,11 +3,11 @@
 [![CI](https://github.com/DerRemo/krankie-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/DerRemo/krankie-dashboard/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A LAN-only web dashboard for [krankie](https://github.com/timbroddin/krankie) keyword-rank data.
+A web dashboard for [krankie](https://github.com/timbroddin/krankie) keyword-rank data.
 
 ![Overview](docs/screenshots/overview.png)
 
-krankie-dashboard is a read-mostly web UI over the SQLite database that [krankie](https://github.com/timbroddin/krankie) already keeps on your machine. It turns that local database into browsable overview, app-detail, keyword-history, and store-comparison views, and can optionally layer in App Store Connect (downloads, revenue, reviews) and TelemetryDeck (engagement) data. It's built for indie iOS developers who already track their App Store keyword rankings with krankie and want a nicer way to look at the numbers. Run it once and it's reachable from any device on your LAN at `http://<host>.local:3737` — check your ranks from your phone on the couch.
+krankie-dashboard is a read-mostly web UI over the SQLite database that [krankie](https://github.com/timbroddin/krankie) already keeps on your machine. It turns that local database into browsable overview, app-detail, keyword-history, and store-comparison views, and can optionally layer in App Store Connect (downloads, revenue, reviews) and TelemetryDeck (engagement) data. It's built for indie iOS developers who already track their App Store keyword rankings with krankie and want a nicer way to look at the numbers. Run it once and it serves at `http://<host>.local:3737` (or `http://localhost:3737`).
 
 ## Prerequisites
 
@@ -50,7 +50,7 @@ bun run reload             # rebuild + kickstart agent
 bun run uninstall:agent    # removes the agent
 ```
 
-After install: reachable from any device on the LAN at `http://<host>.local:3737`. Logs land at `~/Library/Logs/krankie-dashboard/`.
+After install: reachable at `http://<host>.local:3737`. Logs land at `~/Library/Logs/krankie-dashboard/`.
 
 ## Configuration
 
