@@ -104,8 +104,8 @@ test("overview: app row shows labeled metric columns + details link, no rank bar
   // Old cryptic bar is gone
   expect(html).not.toContain("ov-rank-bar");
   expect(html).not.toContain("ov-rank-seg");
-  // Without ASC configured, Impr./Downl. show the em dash, not a crash
-  expect(html).toContain("—");
+  // Without ASC configured, Impr./Downl. cells fall back to the em dash inside the value span
+  expect(html).toContain('<span class="num">—</span>');
 });
 
 test("overview: feed caps at 15 visible items, rest behind details", async () => {

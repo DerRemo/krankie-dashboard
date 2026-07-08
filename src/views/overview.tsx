@@ -89,7 +89,7 @@ export function OverviewView({ apps, rankingsByApp, ascToday, feed, window, last
                       )}
                     </span>
                   </span>
-                  <a class="ov-strip-link" href={`/apps/${app.appStoreId}`}>Details →</a>
+                  <a class="ov-strip-link" href={`/apps/${app.appStoreId}`} aria-label={`Details zu ${app.name ?? app.appStoreId}`}>Details →</a>
                 </div>
               );
             })}
