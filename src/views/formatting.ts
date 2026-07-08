@@ -44,6 +44,20 @@ export function fmtDelta(p: number | null): string {
   return `${sign}${p.toFixed(1)}%`;
 }
 
+/** German grouped integer, e.g. 12345 -> "12.345". Null -> em dash. */
+export function fmtNumDe(n: number | null): string {
+  return n === null ? "—" : n.toLocaleString("de-DE", { maximumFractionDigits: 0 });
+}
+
+/** German signed percentage delta, e.g. 6.9 -> "+6,9 %", -6.9 -> "-6,9 %", 0 -> "±0 %". */
+export function fmtDeltaDe(p: number | null): string {
+  if (p === null || !Number.isFinite(p)) return "—";
+  if (p === 0) return "±0 %";
+  const sign = p > 0 ? "+" : "-";
+  const abs = Math.abs(p).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return `${sign}${abs} %`;
+}
+
 export type DeltaClass = "delta-up" | "delta-down" | "delta-neutral";
 
 export function deltaClass(p: number | null): DeltaClass {

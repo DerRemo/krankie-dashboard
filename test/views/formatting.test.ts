@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { fmtNum, fmtCompactNum, fmtUsd, fmtPct, fmtDelta, deltaClass, ago } from "../../src/views/formatting";
+import { fmtNum, fmtCompactNum, fmtUsd, fmtPct, fmtDelta, fmtNumDe, fmtDeltaDe, deltaClass, ago } from "../../src/views/formatting";
 
 test("fmtNum formats with grouping, null as em dash", () => {
   expect(fmtNum(12345)).toBe("12,345");
@@ -58,4 +58,18 @@ test("ago renders relative time buckets (German 'vor …' phrasing)", () => {
   expect(ago(new Date(Date.now() - 3 * 3_600_000).toISOString())).toContain("h");
   expect(ago(new Date(Date.now() - 3 * 86_400_000).toISOString())).toContain("vor 3");
   expect(ago(new Date(Date.now() - 3 * 86_400_000).toISOString())).toContain("d");
+});
+
+test("fmtNumDe groups with dot, em dash for null", () => {
+  expect(fmtNumDe(12345)).toBe("12.345");
+  expect(fmtNumDe(0)).toBe("0");
+  expect(fmtNumDe(null)).toBe("—");
+});
+
+test("fmtDeltaDe: comma decimal, space before percent, ±0 for zero", () => {
+  expect(fmtDeltaDe(6.9)).toBe("+6,9 %");
+  expect(fmtDeltaDe(-6.9)).toBe("-6,9 %");
+  expect(fmtDeltaDe(247.4)).toBe("+247,4 %");
+  expect(fmtDeltaDe(0)).toBe("±0 %");
+  expect(fmtDeltaDe(null)).toBe("—");
 });
