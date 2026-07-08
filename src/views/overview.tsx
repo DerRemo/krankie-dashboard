@@ -3,7 +3,7 @@ import { PageHead } from "./components/PageHead";
 import { Tabs } from "./components/Tabs";
 import { FeedList } from "./components/FeedList";
 import { AppIconPlaceholder } from "./components/AppIconPlaceholder";
-import { fmtNum, fmtDelta, deltaClass, ago } from "./formatting";
+import { fmtNumDe, fmtDeltaDe, deltaClass, ago } from "./formatting";
 import type { App, RankingRow } from "../db/types";
 import type { AscTodayRow } from "../data/asc";
 import type { FeedEntry, FeedWindow } from "../data/feed";
@@ -46,33 +46,51 @@ export function OverviewView({ apps, rankingsByApp, ascToday, feed, window, last
               const ranked = rows.filter((r) => r.currentRank !== null).length;
               const top3 = rows.filter((r) => r.currentRank !== null && r.currentRank <= 3).length;
               const top10 = rows.filter((r) => r.currentRank !== null && r.currentRank <= 10).length;
-              const top50 = rows.filter((r) => r.currentRank !== null && r.currentRank <= 50).length;
-              const segs = [
-                { tier: "top3", n: top3 },
-                { tier: "top10", n: Math.max(0, top10 - top3) },
-                { tier: "top50", n: Math.max(0, top50 - top10) },
-                { tier: "ranked", n: Math.max(0, ranked - top50) },
-              ];
-              const pct = (n: number) => (total > 0 ? (n / total) * 100 : 0);
               const asc = ascByApp.get(app.appStoreId);
+              const hasAsc = !!asc?.date;
               return (
-                <a class="card ov-strip-row" href={`/apps/${app.appStoreId}`} data-app-id={app.appStoreId}>
+                <div class="card ov-strip-row" data-app-id={app.appStoreId}>
                   <span class="ov-strip-id">
                     <AppIconPlaceholder name={app.name ?? app.appStoreId} size={32} />
                     <span class="ov-strip-name">{app.name ?? app.appStoreId}</span>
+                    <span class="ov-strip-platform">{app.platform}</span>
                   </span>
-                  <span class="ov-rank-bar ov-strip-bar" role="img"
-                    aria-label={`Rang-Verteilung: ${top3} Top 3, ${top10} Top 10, ${top50} Top 50, ${ranked} von ${total} platziert`}>
-                    {segs.map((s) => (s.n > 0 ? <span class="ov-rank-seg" data-tier={s.tier} style={`width:${pct(s.n)}%`} /> : null))}
+                  <span class="ov-metric">
+                    <span class="ov-metric-label">Keywords</span>
+                    <span class="ov-metric-val num">{fmtNumDe(total)}</span>
                   </span>
-                  <span class="ov-strip-tiers num">{top3} · {top10} · {top50} <span class="ov-strip-total">/ {total}</span></span>
-                  {asc?.date && (
-                    <span class="ov-strip-asc">
-                      <span class="ov-strip-metric"><span class="num">{fmtNum(asc.impressions)}</span> Impr. <span class={`num ${deltaClass(asc.impressionsDelta7dPct)}`}>{fmtDelta(asc.impressionsDelta7dPct)}</span></span>
-                      <span class="ov-strip-metric"><span class="num">{fmtNum(asc.downloads)}</span> Downl. <span class={`num ${deltaClass(asc.downloadsDelta7dPct)}`}>{fmtDelta(asc.downloadsDelta7dPct)}</span></span>
+                  <span class="ov-metric">
+                    <span class="ov-metric-label">Platziert</span>
+                    <span class="ov-metric-val num">{fmtNumDe(ranked)}</span>
+                  </span>
+                  <span class="ov-metric">
+                    <span class="ov-metric-label">Top 10</span>
+                    <span class={`ov-metric-val num${top10 > 0 ? " pos" : ""}`}>{fmtNumDe(top10)}</span>
+                  </span>
+                  <span class="ov-metric">
+                    <span class="ov-metric-label">Top 3</span>
+                    <span class={`ov-metric-val num${top3 > 0 ? " pos" : ""}`}>{fmtNumDe(top3)}</span>
+                  </span>
+                  <span class="ov-metric">
+                    <span class="ov-metric-label">Impressions</span>
+                    <span class="ov-metric-val">
+                      <span class="num">{hasAsc ? fmtNumDe(asc!.impressions) : "—"}</span>
+                      {hasAsc && asc!.impressionsDelta7dPct !== null && (
+                        <span class={`num ov-metric-sub ${deltaClass(asc!.impressionsDelta7dPct)}`}>{fmtDeltaDe(asc!.impressionsDelta7dPct)}</span>
+                      )}
                     </span>
-                  )}
-                </a>
+                  </span>
+                  <span class="ov-metric">
+                    <span class="ov-metric-label">Downloads</span>
+                    <span class="ov-metric-val">
+                      <span class="num">{hasAsc ? fmtNumDe(asc!.downloads) : "—"}</span>
+                      {hasAsc && asc!.downloadsDelta7dPct !== null && (
+                        <span class={`num ov-metric-sub ${deltaClass(asc!.downloadsDelta7dPct)}`}>{fmtDeltaDe(asc!.downloadsDelta7dPct)}</span>
+                      )}
+                    </span>
+                  </span>
+                  <a class="ov-strip-link" href={`/apps/${app.appStoreId}`}>Details →</a>
+                </div>
               );
             })}
           </div>

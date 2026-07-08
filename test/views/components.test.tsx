@@ -1,4 +1,7 @@
 import { test, expect } from "bun:test";
+import { OverviewView } from "../../src/views/overview";
+import type { App, RankingRow } from "../../src/db/types";
+import type { AscTodayRow } from "../../src/data/asc";
 import { AscRevenueByTerritory } from "../../src/views/components/AscRevenueByTerritory";
 import type { AscTerritoryRevenue } from "../../src/data/asc";
 import { AscKpiStrip } from "../../src/views/components/AscKpiStrip";
@@ -215,5 +218,50 @@ test("BenchmarkSummary renders the KPI strip", () => {
   expect(html).toContain("Wir führen");
   expect(html).toContain("Wir hängen hinten");
   expect(html).toContain("12.5");
+});
+
+function ovRankingRow(currentRank: number | null): RankingRow {
+  return {
+    keywordId: 1, keyword: "k", store: "de", appId: 1, appStoreId: "111",
+    appName: "TestApp", platform: "iphone", currentRank,
+    delta24h: null, delta7d: null, trend: [], checkedAt: "2026-07-08T00:00:00Z",
+  };
+}
+
+test("OverviewView: ASC metrics render DE numbers + DE delta, green tiers, no rank bar", () => {
+  const app: App = {
+    id: 1, appStoreId: "111", name: "TestApp", developer: null,
+    platform: "iphone", isOwn: true, trackKeywords: true,
+  };
+  const rankingsByApp = new Map<number, RankingRow[]>([
+    [1, [ovRankingRow(2), ovRankingRow(8), ovRankingRow(null)]],
+  ]);
+  const ascToday: AscTodayRow[] = [{
+    appStoreId: "111", date: "2026-07-07",
+    impressionsDate: "2026-07-07", downloadsDate: "2026-07-07",
+    impressions: 12345, downloads: 2,
+    impressionsSource: "sales", downloadsSource: "sales", isPartial: false,
+    impressionsDelta7dPct: -6.9, downloadsDelta7dPct: 0,
+    trendImpressions: [], trendDownloads: [], proceeds30d: 0, trendProceeds: [],
+  }];
+
+  const html = String(
+    <OverviewView
+      apps={[app]}
+      rankingsByApp={rankingsByApp}
+      ascToday={ascToday}
+      feed={[]}
+      window="7d"
+      lastCheckAt={null}
+      navApps={[]}
+      tdConfigured={false}
+    />,
+  );
+
+  expect(html).toContain("12.345");   // impressions, DE grouping
+  expect(html).toContain("-6,9 %");   // impressions delta, DE
+  expect(html).toContain("±0 %");     // downloads delta = 0
+  expect(html).toContain('class="ov-metric-val num pos"'); // Top 10 / Top 3 highlighted
+  expect(html).not.toContain("ov-rank-bar");
 });
 

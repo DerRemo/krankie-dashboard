@@ -19,10 +19,12 @@ test("GET / lists apps with their per-app keyword stats", async () => {
   expect(res.status).toBe(200);
   const html = await res.text();
   expect(html).toContain("TestApp");
-  // Per-app keyword stats render as a compact strip row (rank-distribution
-  // bar + tier counts), not the old KPI-tile portfolio summary.
+  // Per-app keyword stats render as a labeled-column strip row (Keywords /
+  // Platziert / Top 10 / Top 3 / Impressions / Downloads), not the old KPI-tile
+  // portfolio summary or the cryptic rank-distribution bar.
   expect(html).toContain("ov-strip-row");
-  expect(html).toContain('class="ov-rank-bar ov-strip-bar"');
+  expect(html).toContain('class="ov-metric-label"');
+  expect(html).not.toContain("ov-rank-bar");
   expect(html).not.toContain("kpi-grid");
   // Overview shows per-app summary stats only — the full keyword table with
   // ranks/sparklines lives on /keywords and /apps/:id, not here.
@@ -71,8 +73,8 @@ test("GET / sees ASC DB created after server startup", async () => {
     const res = await app.request("/");
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(html).toContain("Impr.");
-    expect(html).toContain("1,234");
+    expect(html).toContain(">Impressions</span>");
+    expect(html).toContain("1.234"); // DE grouping
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -95,8 +97,8 @@ test("GET / shows ASC pills for Sales-only data while analytics is pending", asy
   const res = await app.request("/");
   expect(res.status).toBe(200);
   const html = await res.text();
-  expect(html).toContain("Downl.");
-  expect(html).toContain('<span class="num">7</span> Downl.');
+  expect(html).toContain(">Downloads</span>");
+  expect(html).toContain('<span class="ov-metric-val"><span class="num">7</span></span>');
 });
 
 test("GET / keeps per-app tiers independent across apps, with no portfolio-wide rollup", async () => {

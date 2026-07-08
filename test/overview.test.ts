@@ -76,6 +76,38 @@ test("overview: window toggle defaults to 7d", async () => {
   expect(html).not.toMatch(/<a[^>]*href="\/\?window=24h"[^>]*aria-current/);
 });
 
+test("overview: app row shows labeled metric columns + details link, no rank bar", async () => {
+  const db = makeTestDb();
+  const appId = seedApp(db, { appStoreId: "111", name: "TestApp", platform: "iphone", isOwn: true });
+  const kTop3 = seedKeyword(db, { appId, keyword: "kw-top3", store: "de" });
+  const kTop10 = seedKeyword(db, { appId, keyword: "kw-top10", store: "de" });
+  const kUnranked = seedKeyword(db, { appId, keyword: "kw-unranked", store: "de" });
+  seedRankings(db, kTop3, [{ daysAgo: 0, rank: 2 }]);      // top3 + top10 + ranked
+  seedRankings(db, kTop10, [{ daysAgo: 0, rank: 8 }]);     // top10 + ranked
+  seedRankings(db, kUnranked, [{ daysAgo: 0, rank: null }]); // tracked, unranked
+
+  const app = makeApp({ config: mockConfig(), db, journalMode: "wal" });
+  const html = await (await app.request("/")).text();
+
+  // Labeled metric columns
+  expect(html).toContain(">Keywords</span>");
+  expect(html).toContain(">Platziert</span>");
+  expect(html).toContain(">Top 10</span>");
+  expect(html).toContain(">Top 3</span>");
+  expect(html).toContain(">Impressions</span>");
+  expect(html).toContain(">Downloads</span>");
+  // Details link points at the app page; row wrapper is a div, not an anchor
+  expect(html).toContain('class="ov-strip-link" href="/apps/111"');
+  expect(html).toContain('<div class="card ov-strip-row"');
+  // Platform badge present
+  expect(html).toContain('class="ov-strip-platform"');
+  // Old cryptic bar is gone
+  expect(html).not.toContain("ov-rank-bar");
+  expect(html).not.toContain("ov-rank-seg");
+  // Without ASC configured, Impr./Downl. show the em dash, not a crash
+  expect(html).toContain("—");
+});
+
 test("overview: feed caps at 15 visible items, rest behind details", async () => {
   const db = makeTestDb();
   const appId = seedApp(db, { appStoreId: "111", name: "TestApp", platform: "iphone", isOwn: true });
