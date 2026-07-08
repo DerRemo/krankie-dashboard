@@ -13,12 +13,12 @@ krankie-dashboard is a read-mostly web UI over the SQLite database that [krankie
 
 - **macOS** — the production setup uses `launchd` LaunchAgents and mDNS `.local` hostnames, so this only runs on a Mac.
 - [**Bun**](https://bun.sh) — the JavaScript runtime this project is built and run with.
-- [**krankie**](https://github.com/timbroddin/krankie) — the keyword-rank tracker whose SQLite database this dashboard reads. Required.
+- [**krankie**](https://github.com/timbroddin/krankie) — the keyword-rank tracker whose SQLite database this dashboard reads. **Required, and it must already be set up and tracking at least one app**, so that `~/.krankie/krankie.db` exists and holds data. This dashboard is read-only: it visualizes krankie's data but never configures krankie or adds keywords — do that in krankie itself first.
 - [**`asc`**](https://asccli.sh/) — the App Store Connect CLI. Optional; only needed if you want the downloads/revenue/reviews features.
 
 ## Quickstart
 
-Try it out locally before setting up the always-on production install:
+Try it out locally before setting up the always-on production install. This assumes krankie is already installed and has run at least once, so `~/.krankie/krankie.db` exists — otherwise the WAL command below fails and the dashboard has nothing to show.
 
 ```bash
 git clone https://github.com/DerRemo/krankie-dashboard.git
