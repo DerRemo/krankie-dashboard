@@ -1311,44 +1311,57 @@ main > *:nth-child(n+7) { animation-delay: 360ms; }
 .ov-section > .section-label { margin-top: 0; }
 
 
-/* Keyword rank-distribution bar — the signature per-app visual. Stacked
-   segments run best → ranked; the unfilled remainder is the track (unranked). */
-.ov-rank-bar {
-  display: flex;
-  gap: 2px;
-  height: 10px;
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-  background: var(--track-bg);
-}
-.ov-rank-seg { height: 100%; min-width: 2px; }
-.ov-rank-seg[data-tier="top3"]   { background: var(--success-strong); }
-.ov-rank-seg[data-tier="top10"]  { background: var(--success); }
-.ov-rank-seg[data-tier="top50"]  { background: var(--accent); }
-.ov-rank-seg[data-tier="ranked"] { background: color-mix(in srgb, var(--accent) 38%, var(--surface)); }
-
-
-/* Overview: compact per-app strip rows. Reuses .card for the elevated
-   surface/border/shadow instead of inventing a new one; only lays out the
-   grid + overrides the card's default padding. */
+/* Overview: compact per-app rows. Reuses .card for the surface; lays out an
+   identity cell + a right-pushed group of labeled metric cells + a details
+   link. The old stacked rank-distribution bar was removed — unlabeled and
+   unreadable; metrics now carry explicit column labels. */
 .ov-strip { display: flex; flex-direction: column; gap: var(--space-2); }
 .ov-strip-row {
   display: grid;
-  grid-template-columns: minmax(140px, 1fr) minmax(120px, 2fr) auto auto;
+  grid-template-columns: minmax(160px, 1fr) repeat(6, auto) auto;
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  text-decoration: none;
-  color: inherit;
 }
-.ov-strip-row:hover .ov-strip-name { text-decoration: underline; }
 .ov-strip-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .ov-strip-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ov-strip-bar { display: flex; }
-.ov-strip-tiers { white-space: nowrap; }
-.ov-strip-total { color: var(--text-faint); }
-.ov-strip-asc { display: flex; gap: 14px; white-space: nowrap; }
-.ov-strip-metric { display: inline-flex; gap: 5px; align-items: baseline; }
+.ov-strip-platform {
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+}
+.ov-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border);
+  white-space: nowrap;
+}
+.ov-metric-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint-2);
+}
+.ov-metric-val { font-size: 20px; font-weight: 600; }
+.ov-metric-val.pos { color: var(--success); }
+.ov-metric-sub { font-size: 0.65em; font-weight: 600; margin-left: 4px; }
+.ov-strip-link {
+  justify-self: end;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.ov-strip-link:hover { text-decoration: underline; }
 
 /* Overview: movement feed */
 .ov-feed-head { display: flex; align-items: center; justify-content: space-between; }
@@ -1410,9 +1423,10 @@ main > *:nth-child(n+7) { animation-delay: 360ms; }
 .feed-kw-col-head[data-dir="down"] .feed-kw-col-count { color: var(--danger); background: var(--danger-soft); }
 
 @media (max-width: 720px) {
-  .ov-strip-row { grid-template-columns: 1fr auto; }
-  .ov-strip-bar { grid-column: 1 / -1; }
-  .ov-strip-asc { grid-column: 1 / -1; }
+  .ov-strip-row { grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  .ov-strip-id { grid-column: 1 / -1; }
+  .ov-metric { border-left: none; padding-left: 0; }
+  .ov-strip-link { grid-column: 1 / -1; justify-self: start; }
   .feed-meta { white-space: normal; }
   .feed-metrics-row { grid-template-columns: 1fr; }
   .feed-keyword-cols { grid-template-columns: 1fr; }
