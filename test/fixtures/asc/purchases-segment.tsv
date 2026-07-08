@@ -1,0 +1,4 @@
+Date	App Name	App Apple Identifier	Purchase Type	Content Name	Content Apple Identifier	Payment Method	Device	Platform Version	Source Type	Page Type	App Download Date	Pre-Order	Territory	Purchases	Proceeds in USD	Sales in USD	Paying Users
+2026-06-15	Aurora	1000000001	App purchase	Aurora	1000000001	PayPal	iPad	iOS 26.5	App Store search	Product page	2026-06-15		DE	1	1.99	2.99	1
+2026-06-15	Aurora	1000000001	App purchase	Aurora	1000000001	Visa	iPhone	iOS 26.5	App Store search	Product page	2026-06-15		DE	1	1.99	2.99	1
+2026-06-15	Comet	1000000002	In-App Purchase	Comet Premium	1000000003	PayPal	iPhone	iOS 26.5	App Store search	Product page	2026-06-10		US	1	0.70	0.99	1

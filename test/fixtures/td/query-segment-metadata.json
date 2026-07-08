@@ -1,0 +1,22 @@
+[
+  {
+    "version": "v1",
+    "timestamp": "2026-04-11T00:00:00.000Z",
+    "event": { "type": "newSessionBegan", "count": 50000 }
+  },
+  {
+    "version": "v1",
+    "timestamp": "2026-04-11T00:00:00.000Z",
+    "event": { "type": "paywall_shown", "count": 1200 }
+  },
+  {
+    "version": "v1",
+    "timestamp": "2026-04-11T00:00:00.000Z",
+    "event": { "type": "paywall_converted", "count": 180 }
+  },
+  {
+    "version": "v1",
+    "timestamp": "2026-04-11T00:00:00.000Z",
+    "event": { "type": "habit_completed", "count": 9500 }
+  }
+]

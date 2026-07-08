@@ -1,0 +1,24 @@
+#!/bin/bash
+# Mock krankie binary for tests. Behavior controlled via env vars.
+case "$1 $2" in
+  "check status")
+    if [ -n "$KRANKIE_MOCK_RUNNING" ]; then
+      echo '{"running":true,"progress":{"done":3,"total":12}}'
+    else
+      echo '{"running":false,"lastFinishedAt":"2026-05-06T10:00:00Z","exitCode":0}'
+    fi
+    ;;
+  "check run")
+    sleep "${KRANKIE_MOCK_DURATION:-0.05}"
+    echo "checked: 12 keywords"
+    if [ -n "$KRANKIE_MOCK_FAIL" ]; then
+      echo "boom" 1>&2
+      exit 1
+    fi
+    exit 0
+    ;;
+  *)
+    echo "unknown command: $*" 1>&2
+    exit 2
+    ;;
+esac

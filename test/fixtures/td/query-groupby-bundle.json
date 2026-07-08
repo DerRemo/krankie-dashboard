@@ -1,0 +1,10 @@
+[
+  {
+    "version": "v1",
+    "timestamp": "2026-04-11T00:00:00.000Z",
+    "event": {
+      "payload.appBundle": "com.example.aurora",
+      "count": 12345
+    }
+  }
+]

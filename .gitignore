@@ -1,0 +1,16 @@
+node_modules/
+dist/
+public/client.js
+public/client.js.map
+*.log
+.env
+.DS_Store
+*.p8
+.krankie-dashboard/
+
+.superpowers/
+*.bun-build
+
+# internal design docs & trackers — not part of the public release
+docs/superpowers/
+docs/*.csv

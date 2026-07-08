@@ -1,0 +1,4 @@
+Provider	Provider Country	SKU	Developer	Title	Version	Product Type Identifier	Units	Developer Proceeds	Begin Date	End Date	Customer Currency	Country Code	Currency of Proceeds	Apple Identifier	Customer Price	Promo Code	Parent Identifier	Subscription	Period	Category	CMB	Device	Supported Platforms
+APPLE	US	alpha-ios	Dev	Alpha	2.1	1F	1	1.76	01/15/2024	01/15/2024	EUR	DE	EUR	111	2.99
+APPLE	US	beta-ios	Dev	Beta	1.0	1	3	0.70	01/15/2024	01/15/2024	EUR	DE	EUR	222	0.99
+APPLE	US	com.dev.beta.premium	Dev	Beta Premium	1.0	IA1	2	1.17	01/15/2024	01/15/2024	EUR	DE	EUR	999	1.99		beta-ios

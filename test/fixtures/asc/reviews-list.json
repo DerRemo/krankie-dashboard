@@ -1,0 +1,51 @@
+{
+  "data": [
+    {
+      "type": "customerReviews",
+      "id": "00000192-fe8a-cb03-3dc1-7a3a00000000",
+      "attributes": {
+        "rating": 5,
+        "title": "Endlich das perfekte Tool für den Wohnwagen",
+        "body": "Genau das, was ich gesucht habe! Aurora zeigt mir sofort, ob mein Wohnwagen richtig ausgerichtet ist.",
+        "reviewerNickname": "AppFan42",
+        "createdDate": "2026-04-04T02:50:35-07:00",
+        "territory": "DEU"
+      },
+      "relationships": {
+        "response": {
+          "links": {
+            "self": "https://api.appstoreconnect.apple.com/v1/customerReviews/00000192-fe8a-cb03-3dc1-7a3a00000000/relationships/response",
+            "related": "https://api.appstoreconnect.apple.com/v1/customerReviews/00000192-fe8a-cb03-3dc1-7a3a00000000/response"
+          }
+        }
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/customerReviews/00000192-fe8a-cb03-3dc1-7a3a00000000"
+      }
+    },
+    {
+      "type": "customerReviews",
+      "id": "00000190-aaaa-bbbb-cccc-000000000001",
+      "attributes": {
+        "rating": 4,
+        "title": null,
+        "body": "Nice app.",
+        "reviewerNickname": null,
+        "createdDate": "2026-03-10T09:00:00-07:00",
+        "territory": "USA"
+      },
+      "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/customerReviews/00000190-aaaa-bbbb-cccc-000000000001"
+      }
+    }
+  ],
+  "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/apps/1000000001/customerReviews?limit=50"
+  },
+  "meta": {
+    "paging": {
+      "total": 2,
+      "limit": 50
+    }
+  }
+}

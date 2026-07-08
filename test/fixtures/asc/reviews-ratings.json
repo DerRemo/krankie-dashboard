@@ -1,0 +1,29 @@
+{
+  "appId": 1000000001,
+  "appName": "Aurora: Bubble Level",
+  "averageRating": 4.4,
+  "totalCount": 14,
+  "countryCount": 2,
+  "byCountry": [
+    {
+      "appId": 1000000001,
+      "appName": "Aurora: Wasserwaage",
+      "country": "DE",
+      "countryName": "Germany",
+      "averageRating": 4.6,
+      "ratingCount": 12,
+      "currentVersionRating": 4.6,
+      "currentVersionCount": 12
+    },
+    {
+      "appId": 1000000001,
+      "appName": "Aurora: Bubble Level",
+      "country": "US",
+      "countryName": "United States",
+      "averageRating": 4.0,
+      "ratingCount": 2,
+      "currentVersionRating": 4.0,
+      "currentVersionCount": 2
+    }
+  ]
+}

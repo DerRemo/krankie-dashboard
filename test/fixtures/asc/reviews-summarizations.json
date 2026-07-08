@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "type": "customerReviewSummarizations",
+      "id": "00000000-0000-4000-8000-000000000010",
+      "attributes": {
+        "text": "Users praise ease of use and reliable reminders; a few mention wanting more customization.",
+        "locale": "en-US",
+        "platform": "IOS",
+        "createdDate": "2026-06-15T00:00:00Z"
+      }
+    }
+  ],
+  "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/apps/1000000001/customerReviewSummarizations?filter%5Bterritory%5D=USA&filter%5Bplatform%5D=IOS"
+  },
+  "meta": {
+    "paging": {
+      "total": 1,
+      "limit": 50
+    }
+  }
+}

@@ -1,0 +1,23 @@
+#!/bin/bash
+# Mock `asc` binary for tests. Behavior controlled via env vars.
+if [ -n "$ASC_MOCK_FAIL" ]; then
+  echo "boom" 1>&2
+  exit 1
+fi
+if [ -n "$ASC_MOCK_HANG" ]; then
+  sleep 999
+fi
+if [ -n "$ASC_MOCK_BAD_JSON" ]; then
+  echo "not json"
+  exit 0
+fi
+if [ -n "$ASC_MOCK_ECHO_ENV" ]; then
+  echo "{\"issuerId\":\"$ASC_ISSUER_ID\",\"keyId\":\"$ASC_KEY_ID\",\"privateKeyPath\":\"$ASC_PRIVATE_KEY_PATH\",\"bypassKeychain\":\"$ASC_BYPASS_KEYCHAIN\"}"
+  exit 0
+fi
+if [ -z "$ASC_MOCK_STDOUT" ]; then
+  echo "{}"
+else
+  echo "$ASC_MOCK_STDOUT"
+fi
+exit 0

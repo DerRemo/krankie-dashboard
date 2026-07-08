@@ -1,0 +1,5 @@
+Date	App Name	App Apple Identifier	Event	Page Type	Source Type	Engagement Type	Device	Platform Version	Territory	Counts	Unique Counts
+2024-01-15	Alpha	111	Impression	No page	App Store search		iPhone	iOS 17	US	1000	900
+2024-01-15	Alpha	111	Page view	Product page	App Store search		iPhone	iOS 17	US	80	70
+2024-01-15	Alpha	111	Page view	Store sheet	App referrer		iPhone	iOS 17	US	20	18
+2024-01-15	Alpha	111	Tap	Product page	App Store search	Get	iPhone	iOS 17	US	12	10

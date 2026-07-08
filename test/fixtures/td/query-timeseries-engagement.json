@@ -1,0 +1,17 @@
+[
+  {
+    "version": "v1",
+    "timestamp": "2026-05-09T00:00:00.000Z",
+    "result": { "sessions": 1200, "dau": 850 }
+  },
+  {
+    "version": "v1",
+    "timestamp": "2026-05-10T00:00:00.000Z",
+    "result": { "sessions": 1350, "dau": 902 }
+  },
+  {
+    "version": "v1",
+    "timestamp": "2026-05-11T00:00:00.000Z",
+    "result": { "sessions": 1500, "dau": 1024 }
+  }
+]

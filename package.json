@@ -1,0 +1,46 @@
+{
+  "name": "krankie-dashboard",
+  "version": "1.0.0",
+  "description": "LAN-only web dashboard over your local krankie ASO database and App Store Connect data — keyword rankings, downloads, revenue, reviews, and competitor benchmarks. macOS + Bun.",
+  "license": "MIT",
+  "author": "Remo Adams-Schönfeld",
+  "homepage": "https://github.com/DerRemo/krankie-dashboard#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DerRemo/krankie-dashboard.git"
+  },
+  "keywords": [
+    "krankie",
+    "aso",
+    "app-store-connect",
+    "app-store-optimization",
+    "dashboard",
+    "bun",
+    "hono",
+    "ios"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/server.tsx",
+    "build:client": "bun build src/client/app.ts --outfile public/client.js --minify",
+    "build:server": "bun build src/server.tsx --compile --outfile dist/krankie-dashboard --target bun",
+    "build": "bun run build:client && bun run build:server",
+    "typecheck": "tsc --noEmit",
+    "start": "./dist/krankie-dashboard",
+    "td:sync": "bun run src/server.tsx --td-sync",
+    "td:remap": "bun run src/td/remap-cli.ts",
+    "test": "bun test",
+    "smoke": "bun test test/smoke.test.ts",
+    "install:agent": "./scripts/install-agent.sh",
+    "uninstall:agent": "./scripts/uninstall-agent.sh",
+    "reload": "./scripts/reload-agent.sh"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "uplot": "^1.6.31"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.5.0"
+  }
+}

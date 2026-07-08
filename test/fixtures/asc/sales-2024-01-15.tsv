@@ -1,0 +1,7 @@
+Provider	Provider Country	SKU	Developer	Title	Version	Product Type Identifier	Units	Developer Proceeds	Begin Date	End Date	Customer Currency	Country Code	Currency of Proceeds	Apple Identifier	Customer Price	Promo Code	Parent Identifier	Subscription	Period	Category	CMB	Device	Supported Platforms	Proceeds Reason	Preserved Pricing	Client	Order Type
+APPLE	US	sku.alpha	Dev	Alpha	1.0	1	5	0.70	01/15/2024	01/15/2024	USD	US	USD	111	0.99						iPhone
+APPLE	US	sku.alpha	Dev	Alpha	1.0	1	2	0.70	01/15/2024	01/15/2024	USD	DE	USD	111	0.99						iPhone
+APPLE	US	sku.alpha	Dev	Alpha	1.0	1F	1	0	01/15/2024	01/15/2024	USD	US	USD	111	0.00						iPhone
+APPLE	US	sku.alpha	Dev	Alpha	1.0	7	3	0	01/15/2024	01/15/2024	USD	US	USD	111	0.00						iPhone
+APPLE	US	sku.alpha	Dev	Alpha	1.0	IA1	2	1.40	01/15/2024	01/15/2024	USD	US	USD	111	1.99						iPhone
+APPLE	US	sku.beta	Dev	Beta	1.0	1	8	0.70	01/15/2024	01/15/2024	USD	US	USD	222	0.99						iPhone

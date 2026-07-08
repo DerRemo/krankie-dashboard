@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "id": "td-uuid-aaaa-0001",
+      "type": "apps",
+      "attributes": { "name": "Aurora" }
+    },
+    {
+      "id": "td-uuid-aaaa-0002",
+      "type": "apps",
+      "attributes": { "name": "Comet" }
+    },
+    {
+      "id": "td-uuid-aaaa-0003",
+      "type": "apps",
+      "attributes": { "name": "OrphanedTdApp" }
+    }
+  ]
+}
