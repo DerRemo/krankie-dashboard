@@ -14,3 +14,7 @@ public/client.js.map
 # internal design docs & trackers — not part of the public release
 docs/superpowers/
 docs/*.csv
+.penates-images/
+
+# local agent workflow config — not part of the public release
+CLAUDE.md
