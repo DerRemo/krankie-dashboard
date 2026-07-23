@@ -45,11 +45,17 @@ export async function syncSales(
         "filter[reportDate]":    date,
         "filter[version]":       "1_1",
       });
-      const { rows, mixedCurrencyBuckets, droppedUnknownParent } = parseSalesTsv(tsv, { filterAppStoreIds: filterSet, skuToAppStoreId });
+      const { rows, mixedCurrencyBuckets, droppedUnknownParent, droppedMalformed } = parseSalesTsv(tsv, { filterAppStoreIds: filterSet, skuToAppStoreId });
       if (mixedCurrencyBuckets > 0) {
         logger.warn(
           { phase: "sales", date, mixedCurrencyBuckets },
           "sales rows had multiple currencies in the same (app, date, territory) bucket — first currency kept",
+        );
+      }
+      if (droppedMalformed > 0) {
+        logger.warn(
+          { phase: "sales", date, droppedMalformed },
+          "sales rows skipped — unparseable date or non-numeric units/proceeds; rest of day kept",
         );
       }
       if (droppedUnknownParent > 0) {
@@ -149,9 +155,22 @@ export function upsertSalesRows(ascDb: Database, rows: SalesRow[]): void {
       proceeds_local = excluded.proceeds_local,
       iap_proceeds_local = excluded.iap_proceeds_local,
       proceeds_currency = excluded.proceeds_currency,
-      proceeds_usd = excluded.proceeds_usd,
+      -- Non-USD rows arrive with proceeds_usd = 0 (FX is a later pass). Blindly
+      -- copying that would zero an already-converted value every re-sync, so a
+      -- failed FX pass this run would regress revenue to $0. Keep the existing
+      -- converted value unless the row is USD (authoritative) or its local
+      -- proceeds changed (Apple restated → force re-conversion via the 0 signal).
+      proceeds_usd = CASE
+        WHEN excluded.proceeds_currency = 'USD' THEN excluded.proceeds_usd
+        WHEN excluded.proceeds_local != sales_daily.proceeds_local THEN 0
+        ELSE sales_daily.proceeds_usd
+      END,
       iap_units = excluded.iap_units,
-      iap_proceeds_usd = excluded.iap_proceeds_usd
+      iap_proceeds_usd = CASE
+        WHEN excluded.proceeds_currency = 'USD' THEN excluded.iap_proceeds_usd
+        WHEN excluded.iap_proceeds_local != sales_daily.iap_proceeds_local THEN 0
+        ELSE sales_daily.iap_proceeds_usd
+      END
   `);
   // null → 0 for the USD columns: sales_daily.proceeds_usd is NOT NULL.
   // The "pending FX" signal is `proceeds_usd = 0 AND proceeds_currency != 'USD'

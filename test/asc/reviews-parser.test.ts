@@ -79,6 +79,15 @@ describe("parseRatingsJson", () => {
       { appStoreId: "111", territory: "WW", average: 4.5, count: 14, stars1: 0, stars2: 0, stars3: 0, stars4: 0, stars5: 0 },
     ]);
   });
+
+  test("empty/error payload does not emit a bogus zero-count snapshot", () => {
+    // Unrecognized shapes previously wrapped the whole response as one {WW,0,0}
+    // row that polluted rating_snapshots_daily. They must yield no rows now.
+    expect(parseRatingsJson({}, "111")).toEqual([]);
+    expect(parseRatingsJson({ data: [] }, "111")).toEqual([]);
+    expect(parseRatingsJson(null, "111")).toEqual([]);
+    expect(parseRatingsJson({ error: "not found" }, "111")).toEqual([]);
+  });
 });
 
 describe("parseSummarizationsJson", () => {

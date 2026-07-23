@@ -110,7 +110,8 @@ describe("GET /api/asc/status", () => {
     try {
       const dbPath = join(dir, "asc.db");
       const w = openAscDb(dbPath);
-      insertRunningRow(w, "manual", new Date().toISOString());
+      // Older than the reap grace window so it is treated as genuinely dead.
+      insertRunningRow(w, "manual", new Date(Date.now() - 5 * 60_000).toISOString());
       w.close();
       const app = buildTestApp({ ascDbPath: dbPath, configured: true, ascRoot: dir });
       const res = await app.request("/api/asc/status");

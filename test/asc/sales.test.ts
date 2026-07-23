@@ -87,6 +87,44 @@ describe("upsertSalesRows", () => {
     const r = db.query("SELECT units FROM sales_daily").get() as { units: number };
     expect(r.units).toBe(9);
   });
+
+  test("re-sync preserves already-converted proceeds_usd for an unchanged non-USD row", () => {
+    const db = makeAscDb();
+    const eur = {
+      appStoreId: "111", date: "2024-05-01", territory: "DE",
+      units: 3, redownloads: 0, updates: 0,
+      proceedsLocal: 10, iapProceedsLocal: 4, proceedsCurrency: "EUR",
+      proceedsUsd: null, iapUnits: 1, iapProceedsUsd: null,
+    };
+    upsertSalesRows(db, [eur]);
+    // FX pass fills the USD columns.
+    db.run("UPDATE sales_daily SET proceeds_usd = 11, iap_proceeds_usd = 4.4 WHERE territory='DE'");
+    // Re-sync of the same (unchanged) row must NOT zero the converted values,
+    // otherwise a failed FX pass this run would regress revenue to $0.
+    upsertSalesRows(db, [eur]);
+    const r = db.query("SELECT proceeds_usd, iap_proceeds_usd FROM sales_daily WHERE territory='DE'")
+      .get() as { proceeds_usd: number; iap_proceeds_usd: number };
+    expect(r.proceeds_usd).toBe(11);
+    expect(r.iap_proceeds_usd).toBe(4.4);
+  });
+
+  test("re-sync resets proceeds_usd to 0 when non-USD local proceeds change (forces re-convert)", () => {
+    const db = makeAscDb();
+    const eur = {
+      appStoreId: "111", date: "2024-05-01", territory: "DE",
+      units: 3, redownloads: 0, updates: 0,
+      proceedsLocal: 10, iapProceedsLocal: 0, proceedsCurrency: "EUR",
+      proceedsUsd: null, iapUnits: 0, iapProceedsUsd: null,
+    };
+    upsertSalesRows(db, [eur]);
+    db.run("UPDATE sales_daily SET proceeds_usd = 11 WHERE territory='DE'");
+    // Apple restated the local proceeds → the old USD conversion is now stale.
+    upsertSalesRows(db, [{ ...eur, proceedsLocal: 20 }]);
+    const r = db.query("SELECT proceeds_usd, proceeds_local FROM sales_daily WHERE territory='DE'")
+      .get() as { proceeds_usd: number; proceeds_local: number };
+    expect(r.proceeds_local).toBe(20);
+    expect(r.proceeds_usd).toBe(0); // pending re-conversion, not stale
+  });
 });
 
 describe("syncSales", () => {

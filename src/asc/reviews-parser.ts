@@ -36,17 +36,22 @@ export function parseReviewsJson(raw: unknown, appStoreId: string): { rows: Revi
 export function parseRatingsJson(raw: unknown, appStoreId: string): RatingSnapshotRow[] {
   const data = (raw as any)?.byCountry ?? (raw as any)?.data;
   const entries: any[] = Array.isArray(data) ? data : [raw];
-  return entries.map((entry): RatingSnapshotRow => ({
-    appStoreId,
-    territory: String(pick(entry, [["country"], ["territory"], ["attributes", "territory"]]) ?? "WW"),
-    average: Number(pick(entry, [["averageRating"], ["average"], ["attributes", "average"]]) ?? 0),
-    count: Number(pick(entry, [["ratingCount"], ["count"], ["attributes", "count"]]) ?? 0),
-    stars1: Number(pick(entry, [["stars1"], ["attributes", "stars1"]]) ?? 0),
-    stars2: Number(pick(entry, [["stars2"], ["attributes", "stars2"]]) ?? 0),
-    stars3: Number(pick(entry, [["stars3"], ["attributes", "stars3"]]) ?? 0),
-    stars4: Number(pick(entry, [["stars4"], ["attributes", "stars4"]]) ?? 0),
-    stars5: Number(pick(entry, [["stars5"], ["attributes", "stars5"]]) ?? 0),
-  }));
+  return entries
+    .map((entry): RatingSnapshotRow => ({
+      appStoreId,
+      territory: String(pick(entry, [["country"], ["territory"], ["attributes", "territory"]]) ?? "WW"),
+      average: Number(pick(entry, [["averageRating"], ["average"], ["attributes", "average"]]) ?? 0),
+      count: Number(pick(entry, [["ratingCount"], ["count"], ["attributes", "count"]]) ?? 0),
+      stars1: Number(pick(entry, [["stars1"], ["attributes", "stars1"]]) ?? 0),
+      stars2: Number(pick(entry, [["stars2"], ["attributes", "stars2"]]) ?? 0),
+      stars3: Number(pick(entry, [["stars3"], ["attributes", "stars3"]]) ?? 0),
+      stars4: Number(pick(entry, [["stars4"], ["attributes", "stars4"]]) ?? 0),
+      stars5: Number(pick(entry, [["stars5"], ["attributes", "stars5"]]) ?? 0),
+    }))
+    // Drop empty/error payloads: the non-array fallback ([raw]) would otherwise
+    // emit one {WW, average 0, count 0} row that pollutes rating history. A real
+    // rating always has count > 0 (average is 1..5), so 0/0 is never legitimate.
+    .filter((r) => !(r.count === 0 && r.average === 0));
 }
 
 // Real payloads observed for this app only ever returned `data: []` (no app in the

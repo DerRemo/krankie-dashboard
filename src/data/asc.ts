@@ -519,12 +519,23 @@ export function ascDiagnosticsForApps(
 }
 
 /** Healing helper: if last run is 'running' but the lock is dead, mark it failed. */
+// A 'running' row younger than this is assumed to be a sync still starting up
+// (the /api/asc/sync handler inserts the row, THEN spawns the child that takes
+// the lock a moment later), not a dead one — see reapStaleRunningRow.
+const REAP_GRACE_MS = 60_000;
+
 export function reapStaleRunningRow(ascDb: Database, lockHeld: boolean): void {
   if (lockHeld) return;
-  const last = ascDb.query("SELECT id, status FROM sync_runs ORDER BY id DESC LIMIT 1").get() as
-    | { id: number; status: string }
+  const last = ascDb.query("SELECT id, status, started_at FROM sync_runs ORDER BY id DESC LIMIT 1").get() as
+    | { id: number; status: string; started_at: string | null }
     | null;
   if (!last || last.status !== "running") return;
+  // Guard the spawn→lock window: reaping a just-inserted row would flap a live
+  // run to 'failed' (status flicker) until the child writes/finishes. Only reap
+  // once the row is older than the grace window with no lock held — that means
+  // the process is genuinely gone (e.g. SIGKILL before finishRun).
+  const startedMs = last.started_at ? new Date(last.started_at).getTime() : NaN;
+  if (Number.isFinite(startedMs) && Date.now() - startedMs < REAP_GRACE_MS) return;
   ascDb.run(
     `UPDATE sync_runs SET status = 'failed', error = ?, finished_at = ? WHERE id = ?`,
     ["process disappeared", new Date().toISOString(), last.id],

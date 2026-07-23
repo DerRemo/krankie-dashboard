@@ -17,9 +17,9 @@ const REQUIRED_COLS = [
   "Apple Identifier",
 ];
 
-function parseDateMmDdYyyy(raw: string): string {
+function parseDateMmDdYyyy(raw: string): string | null {
   const m = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (!m) throw new Error(`unparseable date: ${raw}`);
+  if (!m) return null;
   const [, mm, dd, yyyy] = m as RegExpMatchArray & [string, string, string, string];
   return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
 }
@@ -36,9 +36,10 @@ export function parseSalesTsv(text: string, opts: ParseSalesOpts = {}): {
   mixedCurrencyBuckets: number;
   droppedUnknownCol: number;
   droppedUnknownParent: number;
+  droppedMalformed: number;
 } {
   const lines = text.split(/\r?\n/).filter((l) => l.length > 0);
-  if (lines.length === 0) return { rows: [], mixedCurrencyBuckets: 0, droppedUnknownCol: 0, droppedUnknownParent: 0 };
+  if (lines.length === 0) return { rows: [], mixedCurrencyBuckets: 0, droppedUnknownCol: 0, droppedUnknownParent: 0, droppedMalformed: 0 };
   const header = lines[0]!.split("\t");
   for (const col of REQUIRED_COLS) {
     if (!header.includes(col)) throw new Error(`Sales TSV missing required column: ${col}`);
@@ -73,6 +74,7 @@ export function parseSalesTsv(text: string, opts: ParseSalesOpts = {}): {
   const mixedBuckets = new Set<string>();
   let droppedUnknownCol = 0;
   let droppedUnknownParent = 0;
+  let droppedMalformed = 0;
 
   // Pass 2: classify each row, attributing IAP rows to their parent app.
   for (const cols of split) {
@@ -93,10 +95,14 @@ export function parseSalesTsv(text: string, opts: ParseSalesOpts = {}): {
     }
 
     const currency = cols[COL_CURRENCY]?.trim() || "";
+    // A single malformed row (drifted date format, non-numeric amounts) must not
+    // abort the whole day — skip it and count it instead of throwing.
     const date = parseDateMmDdYyyy(cols[COL_DATE]!.trim());
+    if (date === null) { droppedMalformed++; continue; }
     const territory = cols[COL_COUNTRY]!.trim() || "??";
     const units = Number(cols[COL_UNITS]!.trim() || "0");
     const perUnit = Number(cols[COL_PROCEEDS]!.trim() || "0");
+    if (!Number.isFinite(units) || !Number.isFinite(perUnit)) { droppedMalformed++; continue; }
 
     const key = `${appStoreId}|${date}|${territory}`;
     let row = agg.get(key);
@@ -119,7 +125,7 @@ export function parseSalesTsv(text: string, opts: ParseSalesOpts = {}): {
     classify(ptype, units, perUnit, row);
   }
 
-  return { rows: [...agg.values()], mixedCurrencyBuckets: mixedBuckets.size, droppedUnknownCol, droppedUnknownParent };
+  return { rows: [...agg.values()], mixedCurrencyBuckets: mixedBuckets.size, droppedUnknownCol, droppedUnknownParent, droppedMalformed };
 }
 
 function classify(ptype: string, units: number, perUnit: number, row: SalesRow): void {

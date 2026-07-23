@@ -356,13 +356,31 @@ describe("ascSyncStatus + reapStaleRunningRow", () => {
     expect(s.running).toBe(false);
   });
 
-  test("reaps a 'running' row when lock is dead", () => {
+  test("reaps a 'running' row older than the grace window when lock is dead", () => {
     const db = makeAscDb();
-    insertSyncRun(db, { trigger: "manual", status: "running" });
+    const old = new Date(Date.now() - 5 * 60_000).toISOString();
+    insertSyncRun(db, { trigger: "manual", status: "running", startedAt: old });
     reapStaleRunningRow(db, false);
     const r = db.query("SELECT status, error FROM sync_runs").get() as any;
     expect(r.status).toBe("failed");
     expect(r.error).toBe("process disappeared");
+  });
+
+  test("does NOT reap a freshly-started 'running' row (spawn→lock window)", () => {
+    const db = makeAscDb();
+    insertSyncRun(db, { trigger: "manual", status: "running", startedAt: new Date().toISOString() });
+    reapStaleRunningRow(db, false);
+    const r = db.query("SELECT status FROM sync_runs").get() as any;
+    expect(r.status).toBe("running"); // live run still taking the lock, not dead
+  });
+
+  test("never reaps while the lock is held", () => {
+    const db = makeAscDb();
+    const old = new Date(Date.now() - 5 * 60_000).toISOString();
+    insertSyncRun(db, { trigger: "manual", status: "running", startedAt: old });
+    reapStaleRunningRow(db, true);
+    const r = db.query("SELECT status FROM sync_runs").get() as any;
+    expect(r.status).toBe("running");
   });
 });
 

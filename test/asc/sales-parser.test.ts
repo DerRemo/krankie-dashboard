@@ -104,6 +104,32 @@ describe("parseSalesTsv", () => {
     expect(rows.length).toBe(0);
   });
 
+  test("a single unparseable-date row is skipped, not fatal — the rest of the day survives", () => {
+    const tsv = [
+      "Apple Identifier\tProduct Type Identifier\tUnits\tDeveloper Proceeds\tBegin Date\tCountry Code\tCurrency of Proceeds",
+      "111\t1\t1\t0.99\tGARBAGE\tUS\tUSD",     // unparseable Begin Date
+      "111\t1\t2\t1.98\t01/15/2024\tUS\tUSD",  // valid row, same bucket
+    ].join("\n");
+    const { rows, droppedMalformed } = parseSalesTsv(tsv);
+    expect(droppedMalformed).toBe(1);
+    const r = rows.find((x) => x.appStoreId === "111" && x.territory === "US")!;
+    expect(r).toBeDefined();
+    expect(r.units).toBe(2); // only the valid row counted
+  });
+
+  test("a row with non-numeric Units/Proceeds is skipped, not summed as NaN", () => {
+    const tsv = [
+      "Apple Identifier\tProduct Type Identifier\tUnits\tDeveloper Proceeds\tBegin Date\tCountry Code\tCurrency of Proceeds",
+      "111\t1\tNOTANUM\t0.99\t01/15/2024\tUS\tUSD", // bad Units
+      "111\t1\t2\t1.98\t01/15/2024\tUS\tUSD",        // valid row
+    ].join("\n");
+    const { rows, droppedMalformed } = parseSalesTsv(tsv);
+    expect(droppedMalformed).toBe(1);
+    const r = rows.find((x) => x.appStoreId === "111" && x.territory === "US")!;
+    expect(r.units).toBe(2);
+    expect(Number.isFinite(r.proceedsLocal)).toBe(true);
+  });
+
   test("returns empty result on empty input", () => {
     expect(parseSalesTsv("").rows).toEqual([]);
   });
