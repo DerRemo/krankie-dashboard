@@ -19,8 +19,16 @@ test("loadConfig rejects invalid PORT", () => {
   expect(() => loadConfig({ PORT: "0" })).toThrow();
 });
 
+test("loadConfig treats empty-string PORT as unset (default 3737)", () => {
+  expect(loadConfig({ PORT: "" }).port).toBe(3737);
+});
+
 test("loadConfig rejects invalid LOG_LEVEL", () => {
   expect(() => loadConfig({ LOG_LEVEL: "loud" })).toThrow();
+});
+
+test("loadConfig treats empty-string LOG_LEVEL as unset (default info)", () => {
+  expect(loadConfig({ LOG_LEVEL: "" }).logLevel).toBe("info");
 });
 
 describe("loadConfig — ASC", () => {

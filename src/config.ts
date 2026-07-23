@@ -35,18 +35,20 @@ function expandHome(p: string): string {
 }
 
 export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
-  const port = Number(env.PORT ?? 3737);
+  // Treat empty-string env vars as unset (avoids crashes when .env has bare
+  // `PORT=` / `LOG_LEVEL=` lines — `??` alone would keep the empty string).
+  const orDefault = (v: string | undefined, fallback: string) => (v && v.length > 0 ? v : fallback);
+
+  const port = Number(orDefault(env.PORT, "3737"));
   if (!Number.isInteger(port) || port <= 0 || port > 65535) {
     throw new Error(`Invalid PORT: ${env.PORT}`);
   }
-  const level = (env.LOG_LEVEL ?? "info").toLowerCase();
+  const level = orDefault(env.LOG_LEVEL, "info").toLowerCase();
   if (!["debug", "info", "warn", "error"].includes(level)) {
     throw new Error(`Invalid LOG_LEVEL: ${env.LOG_LEVEL}`);
   }
 
   const root = join(homedir(), ".krankie-dashboard");
-  // Treat empty-string env vars as unset (avoids surprises when .env has bare `ASC_DB=` lines).
-  const orDefault = (v: string | undefined, fallback: string) => (v && v.length > 0 ? v : fallback);
   const asc: AscConfig = {
     issuerId: env.ASC_ISSUER_ID ?? "",
     keyId: env.ASC_KEY_ID ?? "",
