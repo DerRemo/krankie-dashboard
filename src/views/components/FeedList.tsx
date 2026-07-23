@@ -1,7 +1,7 @@
 import { Card } from "./Card";
 import { StoreBadge } from "./StoreBadge";
 import { StarRating } from "./StarRating";
-import { fmtDelta, deltaClass } from "../formatting";
+import { fmtDeltaDe, deltaClass } from "../formatting";
 import { groupFeed } from "../../data/feed";
 import type { FeedEntry, MoverEntry, AscEntry, ReviewEntry } from "../../data/feed";
 
@@ -45,7 +45,7 @@ function MetricCard({ label, entries }: { label: string; entries: AscEntry[] }) 
           {entries.map((e) => (
             <li class="feed-metric-item">
               <span class={`feed-icon ${e.deltaPct >= 0 ? "up" : "down"}`}>{e.deltaPct >= 0 ? "↗" : "↘"}</span>
-              <span class={`num feed-metric-delta ${deltaClass(e.deltaPct)}`}>{fmtDelta(e.deltaPct)}</span>
+              <span class={`num feed-metric-delta ${deltaClass(e.deltaPct)}`}>{fmtDeltaDe(e.deltaPct)}</span>
               <span class="feed-metric-app">{e.appName ?? e.appStoreId}</span>
             </li>
           ))}

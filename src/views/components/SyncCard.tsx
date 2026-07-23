@@ -19,21 +19,25 @@ export interface SyncCardProps {
   rows: SyncCardRow[];
   action?: unknown;
   details?: { summary: string; body: unknown };
+  /** Optional DOM id + running flag so client polling can target this card. */
+  domId?: string;
+  running?: boolean;
 }
 
 export function SyncCard({
-  title, configured, notConfiguredHint, statusIcon, statusLabel, rows, action, details,
+  title, configured, notConfiguredHint, statusIcon, statusLabel, rows, action, details, domId, running,
 }: SyncCardProps) {
+  const runningAttr = running ? "true" : undefined;
   if (!configured) {
     return (
-      <section class="card card--asc-sync">
+      <section class="card card--asc-sync" id={domId} data-running={runningAttr}>
         <h3>{title}</h3>
         <p class="card-warn">{notConfiguredHint}</p>
       </section>
     );
   }
   return (
-    <section class="card card--asc-sync">
+    <section class="card card--asc-sync" id={domId} data-running={runningAttr}>
       <header class="card-header">
         <h3>{title}</h3>
         <span class="card-status">{statusIcon} {statusLabel}</span>

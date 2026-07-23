@@ -10,7 +10,7 @@ export function TdCustomEventsTable({ events }: TdCustomEventsTableProps) {
     return <p class="empty-block">No custom events discovered yet.</p>;
   }
   return (
-    <table class="td-custom-events-table">
+    <table class="data-table td-custom-events-table">
       <thead>
         <tr>
           <th>Event</th>

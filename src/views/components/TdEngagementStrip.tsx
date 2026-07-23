@@ -9,7 +9,7 @@ export interface TdEngagementStripProps {
 export function TdEngagementStrip({ summary }: TdEngagementStripProps) {
   const { dau, mau, sessions, stickiness, asOfDate } = summary;
   return (
-    <div class="td-engagement-strip">
+    <div class="kpi-grid td-engagement-strip">
       <KpiTile label="DAU" value={fmtNum(dau)} hint={asOfDate ?? "—"} />
       <KpiTile label="MAU (28d)" value={fmtNum(mau)} />
       <KpiTile label="Sessions / day" value={fmtNum(sessions)} hint={asOfDate ?? "—"} />

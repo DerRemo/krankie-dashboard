@@ -455,7 +455,11 @@ export function makeApp(deps: AppDeps) {
     const ascHealthBlock = {
       configured: deps.config.ascConfigured,
       dbReachable: getAscDb() !== null,
-      lastSyncAge: ascStatusBlock.lastRun?.finishedAt && ascStatusBlock.lastRun.status === "success"
+      // A "partial" run still synced recently (some data missing, surfaced via the
+      // ⚠ badge + coverage %) — count it for the freshness check so this row does
+      // not read "never" while the sync card shows "vor 2.0 h".
+      lastSyncAge: ascStatusBlock.lastRun?.finishedAt
+        && (ascStatusBlock.lastRun.status === "success" || ascStatusBlock.lastRun.status === "partial")
         ? (Date.now() - new Date(ascStatusBlock.lastRun.finishedAt).getTime()) / 3_600_000
         : null,
     };

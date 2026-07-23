@@ -43,6 +43,8 @@ export function TdSyncCard({ latest, unmatchedCount }: TdSyncCardProps) {
     <SyncCard
       title="TelemetryDeck Sync"
       configured={true}
+      domId="td-sync-card"
+      running={running}
       statusIcon={statusIcon(status, running)}
       statusLabel={running ? "running…" : status}
       rows={rows}
