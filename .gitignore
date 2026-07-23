@@ -18,3 +18,4 @@ docs/*.csv
 
 # local agent workflow config — not part of the public release
 CLAUDE.md
+.gstack/
